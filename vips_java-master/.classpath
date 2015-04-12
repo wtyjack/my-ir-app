@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/cssbox-4.8/cssbox-4.8.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/Xerces-J-bin.2.11.0/xerces-2_11_0/resolver.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/Xerces-J-bin.2.11.0/xerces-2_11_0/serializer.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/Xerces-J-bin.2.11.0/xerces-2_11_0/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/Xerces-J-bin.2.11.0/xerces-2_11_0/xercesSamples.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/Xerces-J-bin.2.11.0/xerces-2_11_0/xml-apis.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/cssbox-4.8/lib/antlr-runtime-3.5.2.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/cssbox-4.8/lib/jstyleparser-1.20.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/cssbox-4.8/lib/nekohtml-1.9.21.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/cssbox-4.8/lib/slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/cssbox-4.8/lib/unbescape-1.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/cssbox-4.8/lib/xercesImpl-2.11.0.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/cssbox-4.8/lib/xml-apis-1.4.01.jar"/>
+	<classpathentry kind="lib" path="/Users/zhuangenze/Desktop/slf4j-simple-1.6.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
