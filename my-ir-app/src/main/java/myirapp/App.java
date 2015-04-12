@@ -19,7 +19,7 @@ public class App
 {
     public static void main( String[] args )
     {
-    	port(1234);
+    	port(2345);
     	staticFileLocation("/");
     	
     	get("/hello", (request, response) -> {
@@ -57,7 +57,17 @@ public class App
             response.redirect("/news/world");
             return null;
         });
-/*
+        
+        get("/:name", (request, response) -> {
+            System.out.println( "Hello: " + request.params(":name"));
+            return null;
+        });
+        
+       /* get("/", (request, response) -> {
+        	
+			return null;	
+        });
+
         get("/", (request, response) -> {
     		Map<String, Object> attributes = new HashMap<>();
             //attributes.put("hello", 1111);
