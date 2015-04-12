@@ -1,13 +1,16 @@
 package myirapp;
 
+import static spark.Spark.get;
+import static spark.Spark.halt;
+import static spark.Spark.post;
+import static spark.SparkBase.port;
+import static spark.SparkBase.staticFileLocation;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import spark.ModelAndView;
-import spark.template.velocity.*;
-
-
-import static spark.Spark.*;
+import spark.template.velocity.VelocityTemplateEngine;
 /**
  * Hello world!
  *
@@ -16,7 +19,7 @@ public class App
 {
     public static void main( String[] args )
     {
-    	port(2345);
+    	port(1234);
     	staticFileLocation("/");
     	
     	get("/hello", (request, response) -> {
@@ -54,7 +57,7 @@ public class App
             response.redirect("/news/world");
             return null;
         });
-
+/*
         get("/", (request, response) -> {
     		Map<String, Object> attributes = new HashMap<>();
             //attributes.put("hello", 1111);
@@ -67,6 +70,7 @@ public class App
         post("/", (request, response) ->
         request.body()
         );
+        */
         
     }
 }
