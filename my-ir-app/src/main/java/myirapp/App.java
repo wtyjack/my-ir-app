@@ -1,16 +1,17 @@
 package myirapp;
 
 import static spark.Spark.get;
-import static spark.Spark.halt;
-import static spark.Spark.post;
 import static spark.SparkBase.port;
 import static spark.SparkBase.staticFileLocation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
+import GoogleSearchAPI.GoogleSearch;
+import GoogleSearchAPI.ResultEntry;
 /**
  * Hello world!
  *
@@ -20,9 +21,61 @@ public class App
     public static void main( String[] args )
     {
     	port(2345);
-    	staticFileLocation("/");
-    	
-    	get("/hello", (request, response) -> {
+    	staticFileLocation("/");        
+
+    		
+        get("/result.html", (request, response) -> {
+        	System.out.println("I'm here");
+        	
+        	
+        	
+        	//1. Get request
+        	String person = request.queryParams("person");
+        	String attribute = request.queryParams("attribute");        	
+        	System.out.println("person: "+ person+" attribute: "+attribute);
+        	
+        	
+        	
+        	//2. Goole search, get urls
+        	GoogleSearch gsc = new GoogleSearch();
+            ArrayList<ResultEntry> result = gsc.getSearchResult("walid database", 15);
+        	
+            /* test -- print result */
+            for(int i=0; i< result.size(); i++) {
+            	ResultEntry temp = result.get(i);
+            	System.out.printf("%d: \n", (i+1));
+            	System.out.printf("Tile: %s\n", temp.getTitle());
+            	System.out.printf("URL: %s\n", temp.getURL());
+            	System.out.printf("Snippet: %s\n", temp.getSnippet());
+            	System.out.printf("---------------------\n");
+            }
+    		
+            
+        	
+        	//3. Vips
+        	
+        	
+        	
+        	//4. Retrieval
+        	
+        	
+        	
+        	//5.Output
+        	Map<String, Object> attributes = new HashMap<>();
+            attributes.put("person", person);
+
+            // The hello.ftl file is located in directory:
+            // src/test/resources/spark/template/freemarker
+            return new ModelAndView(attributes, "result.html");
+        	
+        	
+				
+        }, new VelocityTemplateEngine());
+
+        
+        /*
+        
+        get("/hello", (request, response) -> {
     		Map<String, Object> attributes = new HashMap<>();
             attributes.put("hello", 1111);
 
@@ -30,12 +83,7 @@ public class App
             // src/test/resources/spark/template/freemarker
             return new ModelAndView(attributes, "hello.wm");
         }, new VelocityTemplateEngine());
-    	
-        post("/hello", (request, response) ->
-            "Hello World: " + request.body()
-        );
         
-
         get("/private", (request, response) -> {
             response.status(401);
             return "Go Away!!!";
@@ -62,25 +110,6 @@ public class App
             System.out.println( "Hello: " + request.params(":name"));
             return null;
         });
-        
-       /* get("/", (request, response) -> {
-        	
-			return null;	
-        });
-
-        get("/", (request, response) -> {
-    		Map<String, Object> attributes = new HashMap<>();
-            //attributes.put("hello", 1111);
-
-            // The hello.ftl file is located in directory:
-            // src/test/resources/spark/template/freemarker
-            return new ModelAndView(attributes, "index.html");
-        }, new VelocityTemplateEngine());
-        
-        post("/", (request, response) ->
-        request.body()
-        );
         */
-        
     }
 }
