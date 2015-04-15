@@ -11,15 +11,18 @@ import java.util.Map;
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
 import vips.Vips;
+import BlockRetrievalAPI.BlockRetrieval;
 import GoogleSearchAPI.GoogleSearch;
 import GoogleSearchAPI.ResultEntry;
+import XMLHandler.DOMTree;
+
 /**
  * Hello world!
  *
  */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) 
     {
     	port(2345);
     	staticFileLocation("/");        
@@ -28,11 +31,6 @@ public class App
         get("/result.html", (request, response) -> {
         	
         	double start, end;
-        	
-        	
-        	
-        	
-        	
         	//1. Get request
         	String person = request.queryParams("person");
         	String attribute = request.queryParams("attribute");   
@@ -80,6 +78,7 @@ public class App
             	Vips vips = new Vips();
             	vips.enableGraphicsOutput(false);	// disable graphics output
             	vips.enableOutputToFolder(false);	// disable output to separate folder 
+            	vips.setOutputFileName("./output/result");
             	vips.setPredefinedDoC(8);			// set permitted degree of coherence
             	vips.startSegmentation(result.get(0).getURL());		// start segmentation on page
             //}
@@ -87,14 +86,23 @@ public class App
             end = System.currentTimeMillis()/1000.0;
             System.out.println("Excution time: " + ( end - start));
             
+            ArrayList<String> block = new ArrayList<String>();
+            DOMTree dtree = new DOMTree("output/result.xml", 3);	
+            block = dtree.getDocuments();
             
             
-            
-        	//4. Retrieval
-        	
-        	
-        	
-            
+            // TODO: query expansion
+            String querystr = "Publication Walid";
+
+        	//4. Block Retrieval
+            BlockRetrieval br = new BlockRetrieval();
+			try {
+				br.genDocIndex(block);
+				br.search(querystr);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             
         	//5.Output
         	Map<String, Object> attributes = new HashMap<>();

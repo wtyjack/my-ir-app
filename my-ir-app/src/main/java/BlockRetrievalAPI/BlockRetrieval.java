@@ -66,7 +66,7 @@ public class BlockRetrieval {
 	      double docScore = hits[i].score;
 	      Document d = searcher.doc(docId);
 	      System.out.println((i + 1) + ". " + d.get("content") + "\n" + docScore);
-	      System.out.println(searcher.explain(q, docId) + "\n\n");
+	      //System.out.println(searcher.explain(q, docId) + "\n\n");
 	    }
 
 	    // reader can only be closed when there

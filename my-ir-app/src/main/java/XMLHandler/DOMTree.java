@@ -92,8 +92,8 @@ public class DOMTree {
 
 	private void buildDOM(String fileName) {
 		try {
-			File XmlFile = new File(
-					"/Users/zhuangenze/Desktop/vips_java-master/VIPSResult.xml");
+			File XmlFile = new File(fileName);
+					
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -104,9 +104,5 @@ public class DOMTree {
 		}
 	}
 
-	public static void main(String args[]) {
-		DOMTree d = new DOMTree("hahaha",2);
-		d.getDocuments();
-	}
 
 }
