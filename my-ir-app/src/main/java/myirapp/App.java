@@ -10,6 +10,7 @@ import java.util.Map;
 
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
+import vips.Vips;
 import GoogleSearchAPI.GoogleSearch;
 import GoogleSearchAPI.ResultEntry;
 /**
@@ -25,44 +26,79 @@ public class App
 
     		
         get("/result.html", (request, response) -> {
-        	System.out.println("I'm here");
+        	
+        	double start, end;
+        	
+        	
         	
         	
         	
         	//1. Get request
         	String person = request.queryParams("person");
-        	String attribute = request.queryParams("attribute");        	
-        	System.out.println("person: "+ person+" attribute: "+attribute);
+        	String attribute = request.queryParams("attribute");   
+        	System.out.printf("1. Query: \"%s %s\"\n", person, attribute);
+        	//System.out.println("person: "+ person+" attribute: "+attribute);
         	
         	
         	
         	//2. Goole search, get urls
+        	start = System.currentTimeMillis()/1000.0;
+        	System.out.printf("2. Google Search ... ");
         	GoogleSearch gsc = new GoogleSearch();
-            ArrayList<ResultEntry> result = gsc.getSearchResult("walid database", 15);
-        	
+            ArrayList<ResultEntry> result = gsc.getSearchResult("walid database", 5);
+            StringBuilder result_string = new StringBuilder();
+            
             /* test -- print result */
             for(int i=0; i< result.size(); i++) {
             	ResultEntry temp = result.get(i);
+            	result_string.append(i);
+            	result_string.append("<br/>");
+            	result_string.append(temp.getTitle());
+            	result_string.append("<br/>");
+            	result_string.append(temp.getURL());
+            	result_string.append("<br/>");
+            	result_string.append(temp.getSnippet());
+            	result_string.append("<br/><br/>");
+            	/*ResultEntry temp = result.get(i);
             	System.out.printf("%d: \n", (i+1));
             	System.out.printf("Tile: %s\n", temp.getTitle());
             	System.out.printf("URL: %s\n", temp.getURL());
             	System.out.printf("Snippet: %s\n", temp.getSnippet());
-            	System.out.printf("---------------------\n");
+            	System.out.printf("---------------------\n");*/
             }
-    		
+            System.out.printf("Done\n");
+            end = System.currentTimeMillis()/1000.0;
+            System.out.println("Excution time: " + ( end - start));
             
         	
+            
+            
         	//3. Vips
-        	
-        	
-        	
+            start = System.currentTimeMillis()/1000.0;
+            System.out.printf("Vips ... ");
+            //for(int i=0; i< result.size(); i++) {
+            	Vips vips = new Vips();
+            	vips.enableGraphicsOutput(false);	// disable graphics output
+            	vips.enableOutputToFolder(false);	// disable output to separate folder 
+            	vips.setPredefinedDoC(8);			// set permitted degree of coherence
+            	vips.startSegmentation(result.get(0).getURL());		// start segmentation on page
+            //}
+            System.out.printf("Done\n");	
+            end = System.currentTimeMillis()/1000.0;
+            System.out.println("Excution time: " + ( end - start));
+            
+            
+            
+            
         	//4. Retrieval
         	
         	
         	
+            
+            
         	//5.Output
         	Map<String, Object> attributes = new HashMap<>();
-            attributes.put("person", person);
+            attributes.put("person", result_string.toString());
 
             // The hello.ftl file is located in directory:
             // src/test/resources/spark/template/freemarker
