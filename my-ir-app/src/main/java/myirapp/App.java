@@ -92,7 +92,16 @@ public class App
             
             
             // TODO: query expansion
-            String querystr = "Publication Walid";
+            //String querystr = "Publication Walid";
+            String querystr = "Contacts";
+            ArrayList<ResultEntry> queryExpandResult = gsc.getSearchResult(querystr, 100);
+            String bindSnippet = "";
+            for(int i=0; i< queryExpandResult.size(); i++) {
+            	ResultEntry temp = queryExpandResult.get(i);
+            	bindSnippet += temp.getSnippet()+" ";
+            }
+            //result_string.append(bindSnippet);
+            
 
         	//4. Block Retrieval
             BlockRetrieval br = new BlockRetrieval();
