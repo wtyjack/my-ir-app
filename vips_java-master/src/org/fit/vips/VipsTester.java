@@ -42,8 +42,6 @@ public class VipsTester {
 			vips.setPredefinedDoC(8);
 			// start segmentation on page
 			vips.startSegmentation(url);
-			//DOMTree d = new DOMTree("hahaha");
-			//d.iterate();
 		} catch (Exception e)
 		{
 			e.printStackTrace();

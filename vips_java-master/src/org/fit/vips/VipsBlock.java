@@ -207,6 +207,11 @@ public class VipsBlock {
 	public void setBox(Box box)
 	{
 		this._box = box;
+		/*if (_box instanceof ElementBox){
+			ElementBox e = (ElementBox) this._box;
+			String output = e.getText();
+			System.out.println(output);
+		}*/
 	}
 
 	/**

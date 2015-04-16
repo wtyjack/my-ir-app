@@ -56,10 +56,11 @@ public final class VipsOutput {
 		{
 			TransformerFactory transFactory = TransformerFactory.newInstance();
 			Transformer transformer = transFactory.newTransformer();
+			//transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			StringWriter buffer = new StringWriter();
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			transformer.transform(new DOMSource(node), new StreamResult(buffer));
-			content = buffer.toString().replaceAll("\n", "");
+			content = buffer.toString().replaceAll("\n", " ");
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
@@ -122,8 +123,10 @@ public final class VipsOutput {
 							src += elementBox.getText();
 
 						content += elementBox.getText() + " ";
-
+						
 					}
+					//System.out.println(content);
+					//System.out.println("--------------------------------");
 					layoutNode.setAttribute("SRC", src);
 					layoutNode.setAttribute("Content", content);
 				}
