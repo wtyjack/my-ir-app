@@ -16,6 +16,7 @@ import vips.Vips;
 import BlockRetrievalAPI.BlockRetrieval;
 import BlockRetrievalAPI.RetrievalItem;
 import GoogleSearchAPI.GoogleSearch;
+import GoogleSearchAPI.ResultEntry;
 import XMLHandler.DOMTree;
 
 /**
@@ -33,64 +34,89 @@ public class App
         get("/result.html", (request, response) -> {
         	
         	double start, end;
+        	double t1, t2, t3, t4;
         	//1. Get request
         	String person = request.queryParams("person");
         	String attribute = request.queryParams("attribute");   
-
+        	String query = person + " " + attribute;
         	System.out.printf("1. Query: \"%s %s\"\n", person, attribute);
-        	//System.out.println("person: "+ person+" attribute: "+attribute);
+
         	
         	
-        	
-        	//2. Goole search, get urls
-//        	start = System.currentTimeMillis()/1000.0;
-//        	System.out.printf("2. Google Search ... ");
-//        	GoogleSearch gsc = new GoogleSearch();
-//            ArrayList<ResultEntry> result = gsc.getSearchResult("walid database", 5);
-            StringBuilder result_string = new StringBuilder();
-//            
-//            /* test -- print result */
-//            for(int i=0; i< result.size(); i++) {
-//            	ResultEntry temp = result.get(i);
-//            	result_string.append(i);
-//            	result_string.append("<br/>");
-//            	result_string.append(temp.getTitle());
-//            	result_string.append("<br/>");
-//            	result_string.append(temp.getURL());
-//            	result_string.append("<br/>");
-//            	result_string.append(temp.getSnippet());
-//            	result_string.append("<br/><br/>");
-//            	/*ResultEntry temp = result.get(i);
-//            	System.out.printf("%d: \n", (i+1));
-//            	System.out.printf("Tile: %s\n", temp.getTitle());
-//            	System.out.printf("URL: %s\n", temp.getURL());
-//            	System.out.printf("Snippet: %s\n", temp.getSnippet());
-//            	System.out.printf("---------------------\n");*/
-//            }
-//            System.out.printf("Done\n");
-//            end = System.currentTimeMillis()/1000.0;
-//            System.out.println("Excution time: " + ( end - start));
+        	//2. Google search, get urls
+        	start = System.currentTimeMillis()/1000.0;
+        	System.out.printf("2. Google Search ... ");
+        	GoogleSearch gsc = new GoogleSearch();
+            ArrayList<ResultEntry> result = gsc.getSearchResult(query, 3);
+            
+          
+            /* test -- print result */
+            /*StringBuilder result_string = new StringBuilder();
+            for(int i=0; i< result.size(); i++) {
+            	ResultEntry temp = result.get(i);
+            	result_string.append(i);
+            	result_string.append("<br/>");
+            	result_string.append(temp.getTitle());
+            	result_string.append("<br/>");
+            	result_string.append(temp.getURL());
+            	result_string.append("<br/>");
+            	result_string.append(temp.getSnippet());
+            	result_string.append("<br/><br/>");
+            	//ResultEntry temp = result.get(i);
+            	System.out.printf("%d: \n", (i+1));
+            	System.out.printf("Tile: %s\n", temp.getTitle());
+            	System.out.printf("URL: %s\n", temp.getURL());
+            	System.out.printf("Snippet: %s\n", temp.getSnippet());
+            	System.out.printf("---------------------\n");
+            }*/
+            System.out.printf("Done\n");
+            end = System.currentTimeMillis()/1000.0;
+            t1 = end - start;
+            //System.out.println("Excution time: " + ( end - start));
             
             
-        	//3. Vips
+            /*String [] result = {"https://www.cs.purdue.edu/homes/aref/", 
+            						"http://ahmedmoustafa.wix.com/home#!publications/clku",
+            						"https://www.cs.purdue.edu/people/aref", 
+            						"http://faculty.washington.edu/mhali/Publications/Publications.htm",
+            						"http://dblp.uni-trier.de/pers/hd/a/Aref:Walid_G=",
+            						"http://www-users.cs.umn.edu/~mokbel/publications.htm",
+            						"http://scholar.google.com/citations?user=vX45evgAAAAJ",
+            						"http://www.researchgate.net/profile/Walid_Aref",
+            						"http://dmlab.cs.umn.edu/publications.html",
+            						"https://cs.uwaterloo.ca/~ilyas/publist.html"};*/
+            
+
+            //3. Vips
+            ArrayList<String> blocks = new ArrayList<String>();
             start = System.currentTimeMillis()/1000.0;
             System.out.printf("Vips ... ");
-            //for(int i=0; i< result.size(); i++) {
+            for(int i=0; i< result.size(); i++) {
             	Vips vips = new Vips();
             	vips.enableGraphicsOutput(false);	// disable graphics output
             	vips.enableOutputToFolder(false);	// disable output to separate folder 
             	vips.setOutputFileName("./output/result");
             	vips.setPredefinedDoC(8);			// set permitted degree of coherence
-            	//vips.startSegmentation(result.get(0).getURL());		// start segmentation on page
-            	vips.startSegmentation("https://www.cs.purdue.edu/people/faculty/aref/");		// start segmentation on page
-            //}
+            	try{
+            		System.out.println(result.get(0).getURL());
+            		vips.startSegmentation(result.get(0).getURL());		// start segmentation on page
+            		//vips.startSegmentation("https://www.cs.purdue.edu/people/faculty/aref/");		// start segmentation on page
+            		//vips.startSegmentation(result[i]);
+            	}catch(Exception e){
+            		continue;
+            	}
+            	
+            	DOMTree dtree = new DOMTree("output/result.xml", 2);
+            	ArrayList<String> temp_block = dtree.getDocuments();
+            	blocks.addAll(temp_block);
+            }
             System.out.printf("Done\n");	
             end = System.currentTimeMillis()/1000.0;
-            System.out.println("Excution time: " + ( end - start));
+            t2 = end - start;
+            //System.out.println("Excution time: " + ( end - start));
             
-            ArrayList<String> block = new ArrayList<String>();
-            DOMTree dtree = new DOMTree("output/result.xml", 2);	
-            block = dtree.getDocuments();
+
+            
             
             // TODO: query expansion
             //String querystr = "Publication Walid";
@@ -120,26 +146,29 @@ public class App
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
 			querystr = BlockRetrieval.extractContactInfo(querystr);
 			querystr = querystr.replaceAll("[^a-zA-Z0-9]", " ");
 			querystr = querystr.substring(0, 9000);
-            System.out.println(querystr);
+            //System.out.println(querystr);
 
             
 
         	//4. Block Retrieval
+			start = System.currentTimeMillis()/1000.0;
             BlockRetrieval br = new BlockRetrieval();
             ArrayList<RetrievalItem> rankResult = new ArrayList<RetrievalItem>();
 			try {
-				br.genDocIndex(block);
+				br.genDocIndex(blocks);
 				rankResult = br.search(querystr);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			end = System.currentTimeMillis()/1000.0;
+            t3 = end - start;
             
-
+			StringBuilder result_string = new StringBuilder();
+			result_string.append("\""+query+"\"");
+			result_string.append("<br/><br/>");
 			for (int i = 0; i < rankResult.size(); i++) {
 				RetrievalItem item = rankResult.get(i);
 				result_string.append("<article data-readmore aria-expanded=\"false\">");
@@ -153,8 +182,13 @@ public class App
 				result_string.append("</article>");
             	result_string.append("<br/><br/>");
 			}
+			
+			
+			System.out.println("Google Search Time: " + t1);
+			System.out.println("VIPS time: " + t2);
+			System.out.println("Block Retrieval Time: " + t3);
 
->>>>>>> 76fd616bc1c7fff79de20722d2a85cd251ee7469
+			
         	//5.Output
         	Map<String, Object> attributes = new HashMap<>();
             attributes.put("result", result_string.toString());
@@ -166,8 +200,8 @@ public class App
         }, new VelocityTemplateEngine());
 
         
-        /*
         
+        /*
         get("/hello", (request, response) -> {
     		Map<String, Object> attributes = new HashMap<>();
             attributes.put("hello", 1111);

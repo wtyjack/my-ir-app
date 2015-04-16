@@ -1,10 +1,13 @@
 package BlockRetrievalAPI;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -16,15 +19,8 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
-import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.io.IOException;
 
 public class BlockRetrieval {
 	// Members
@@ -68,7 +64,7 @@ public class BlockRetrieval {
 		
 		ArrayList<RetrievalItem> result = new ArrayList<RetrievalItem>(); 
 		//RetrievalItem item = new RetrievalItem();
-		System.out.println("Found " + hits.length + " hits.");
+		//System.out.println("Found " + hits.length + " hits.");
 
 	    for(int i = 0; i < hits.length; i++) {
 	      int docId = hits[i].doc;
@@ -79,7 +75,7 @@ public class BlockRetrieval {
 	      item.content = d.get("content");
 	      item.score = docScore;
 	      result.add(item);
-	      System.out.println((i + 1) + ". " + d.get("content") + "\n" + docScore);
+	      //System.out.println((i + 1) + ". " + d.get("content") + "\n" + docScore);
 	      //System.out.println(searcher.explain(q, docId) + "\n\n");
 	    }
 

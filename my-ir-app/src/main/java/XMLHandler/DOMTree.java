@@ -45,10 +45,10 @@ public class DOMTree {
 		for(Node node: docLevelNodes){
 			Element e = (Element) node;
 			String id = e.getAttribute("ID");
-			System.out.println(id+"\n"); 
+			//System.out.println(id+"\n"); 
 			results.add(""); 
 			cocatenateChildrenContent(node,results);
-			System.out.println(results.get(results.size()-1));
+			//System.out.println(results.get(results.size()-1));
 		}
 		return results;
 	}
