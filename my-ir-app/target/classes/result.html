@@ -9,6 +9,7 @@
 		<script src="js/jquery.min.js"></script>
 		<script src="js/jquery.scrolly.min.js"></script>
 		<script src="js/skel.min.js"></script>
+		<script src="js/readmore.min.js"></script>
 		<script src="js/init.js"></script>
 		<script src="js/retrieval.js"></script>
 		<noscript>
@@ -29,7 +30,7 @@
 							<header class="major">
 								<h2 id='retrieval_title'>Results</h2>
 							</header>
-							<p id='retrieval_results'>${person}</p>
+							<p id='retrieval_results'>${result}</p>
 						</div>
 						<div class="6u$ 12u$(medium) important(medium)">
 							<!--<span class="image fit"><img src="images/pic01.jpg" alt="" /></span> -->
@@ -43,9 +44,14 @@
 
 
 			<script>
-				function submit_button() {
-					document.getElementById("myForm").submit();
-				}
-			</script>
-	</body>
-</html>
+                $('article').readmore({
+                    afterToggle: function(trigger, element, expanded) {
+                        if(! expanded) { // The "Close" link was clicked
+                            $('html, body').animate( { scrollTop: element.offset().top }, {duration: 100 } );
+                        }
+                    },
+                    speed: 200,
+                });
+            </script>
+        </body>
+    </html>

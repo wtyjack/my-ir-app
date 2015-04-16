@@ -22,12 +22,17 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.IOException;
 
 public class BlockRetrieval {
 	// Members
 	private StandardAnalyzer analyzer;
 	private Directory index;
+	
+	private static String phoneReg = "\\d{3}?-\\d{3}-\\d{4}|\\(\\d{3}\\)-\\d{3}-\\d{4}"; 
+	private static String emailReg = "[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})";
 	
 	// Methods
 	// Constructor
@@ -48,10 +53,11 @@ public class BlockRetrieval {
 	}
 	
 	// Do the search
-	public void search(String querystr) throws IOException, ParseException{
+	public ArrayList<RetrievalItem> search(String querystr) throws IOException, ParseException{
 		int hitsPerPage = 10;
 		QueryParser qparser = new QueryParser("content", analyzer);
 		Query q = qparser.parse(querystr);
+		
 
 		IndexReader reader = DirectoryReader.open(index);
 		//IndexSearcher searcher = new IndexSearcher(reader);
@@ -60,18 +66,28 @@ public class BlockRetrieval {
 		searcher.search(q, collector);
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
 		
+		ArrayList<RetrievalItem> result = new ArrayList<RetrievalItem>(); 
+		//RetrievalItem item = new RetrievalItem();
 		System.out.println("Found " + hits.length + " hits.");
+
 	    for(int i = 0; i < hits.length; i++) {
 	      int docId = hits[i].doc;
 	      double docScore = hits[i].score;
+	      RetrievalItem item = new RetrievalItem();
 	      Document d = searcher.doc(docId);
+	      item.rank = i + 1;
+	      item.content = d.get("content");
+	      item.score = docScore;
+	      result.add(item);
 	      System.out.println((i + 1) + ". " + d.get("content") + "\n" + docScore);
 	      //System.out.println(searcher.explain(q, docId) + "\n\n");
 	    }
 
+
 	    // reader can only be closed when there
 	    // is no need to access the documents any more.
 	    reader.close();
+	    return result;
 	
 	}
 	
@@ -83,17 +99,24 @@ public class BlockRetrieval {
 	
 	private static void addDoc(IndexWriter w, String content) throws IOException {
 		  Document doc = new Document();
-		  /*
-		  FieldType ft = new FieldType();
-		  ft.setStored(true);
-		  ft.setTokenized(true);
-		  ft.setStoreTermVectors(true);
-		  ft.setStoreTermVectorPositions(true);
-		  */
-		  doc.add(new TextField("content", content, Field.Store.YES));
+		  // extract phone num and email
+		  doc.add(new TextField("content", extractContactInfo(content), Field.Store.YES));
 
 		  w.addDocument(doc);
 	}
-		 
+	
+	public static String extractContactInfo(String content) {
+		String tmp = content;
+		Pattern r = Pattern.compile(emailReg);
+		Matcher m = r.matcher(tmp);
+		m.replaceAll(" email ");
+
+		r = Pattern.compile(phoneReg);
+		m = r.matcher(tmp);
+		m.replaceAll(" phone ");
+
+		return tmp;
+	}
+	
 }
 

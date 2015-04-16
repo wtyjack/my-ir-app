@@ -4,17 +4,18 @@ import static spark.Spark.get;
 import static spark.SparkBase.port;
 import static spark.SparkBase.staticFileLocation;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
-
 import vips.Vips;
 import BlockRetrievalAPI.BlockRetrieval;
+import BlockRetrievalAPI.RetrievalItem;
 import GoogleSearchAPI.GoogleSearch;
-import GoogleSearchAPI.ResultEntry;
 import XMLHandler.DOMTree;
 
 /**
@@ -35,18 +36,46 @@ public class App
         	//1. Get request
         	String person = request.queryParams("person");
         	String attribute = request.queryParams("attribute");   
-        	System.out.printf("1. Query: \"%s %s\"\n", person, attribute);
-        	//System.out.println("person: "+ person+" attribute: "+attribute);
-        	
-        	
-        	
+//        	System.out.printf("1. Query: \"%s %s\"\n", person, attribute);
+//        	//System.out.println("person: "+ person+" attribute: "+attribute);
+//        	
+//        	
+//        	//2. Goole search, get urls
+//        	start = System.currentTimeMillis()/1000.0;
+//        	System.out.printf("2. Google Search ... ");
+        	GoogleSearch gsc = new GoogleSearch();
+//            ArrayList<ResultEntry> result = gsc.getSearchResult("walid database", 5);
+//            StringBuilder result_string = new StringBuilder();
+//            
+//            /* test -- print result */
+//            for(int i=0; i< result.size(); i++) {
+//            	ResultEntry temp = result.get(i);
+//            	result_string.append(i);
+//            	result_string.append("<br/>");
+//            	result_string.append(temp.getTitle());
+//            	result_string.append("<br/>");
+//            	result_string.append(temp.getURL());
+//            	result_string.append("<br/>");
+//            	result_string.append(temp.getSnippet());
+//            	result_string.append("<br/><br/>");
+//            	/*ResultEntry temp = result.get(i);
+//            	System.out.printf("%d: \n", (i+1));
+//            	System.out.printf("Tile: %s\n", temp.getTitle());
+//            	System.out.printf("URL: %s\n", temp.getURL());
+//            	System.out.printf("Snippet: %s\n", temp.getSnippet());
+//            	System.out.printf("---------------------\n");*/
+//            }
+//            System.out.printf("Done\n");
+//            end = System.currentTimeMillis()/1000.0;
+//            System.out.println("Excution time: " + ( end - start));
+            
         	
         	//2. Goole search, get urls
 //        	start = System.currentTimeMillis()/1000.0;
 //        	System.out.printf("2. Google Search ... ");
 //        	GoogleSearch gsc = new GoogleSearch();
 //            ArrayList<ResultEntry> result = gsc.getSearchResult("walid database", 5);
-//            StringBuilder result_string = new StringBuilder();
+            StringBuilder result_string = new StringBuilder();
 //            
 //            /* test -- print result */
 //            for(int i=0; i< result.size(); i++) {
@@ -81,7 +110,7 @@ public class App
             	vips.setOutputFileName("./output/result");
             	vips.setPredefinedDoC(8);			// set permitted degree of coherence
             	//vips.startSegmentation(result.get(0).getURL());		// start segmentation on page
-            	vips.startSegmentation("https://www.cs.purdue.edu/homes/aref/");		// start segmentation on page
+            	vips.startSegmentation("https://www.cs.purdue.edu/people/faculty/aref/");		// start segmentation on page
             //}
             System.out.printf("Done\n");	
             end = System.currentTimeMillis()/1000.0;
@@ -93,32 +122,68 @@ public class App
             
             // TODO: query expansion
             //String querystr = "Publication Walid";
-            String querystr = "contact email fax phone";
-         //   ArrayList<ResultEntry> queryExpandResult = gsc.getSearchResult(attribute, 100);
-         //   for(int i=0; i< queryExpandResult.size(); i++) {
-         //   	ResultEntry temp = queryExpandResult.get(i);
-         //   	querystr += temp.getSnippet()+" ";
-         //   }
-         //   //result_string.append(bindSnippet);
-         //   querystr.replaceAll("\\<.*?>","");
-         //   System.out.println(querystr);
+              String querystr = "";
+           // ArrayList<ResultEntry> queryExpandResult = gsc.getSearchResult(attribute, 100);
+           // for(int i=0; i< queryExpandResult.size(); i++) {
+           // 	ResultEntry temp = queryExpandResult.get(i);
+           // 	querystr += temp.getSnippet()+" ";
+           // }
+           // //result_string.append(bindSnippet);
+           // querystr = Jsoup.parse(querystr).text();
+           // 
+           // // TEST
+           // try {
+		//		PrintWriter out = new PrintWriter("filename.txt");
+		//		out.println(querystr);
+		//		out.close();
+		//	} catch (Exception e1) {
+		//		// TODO Auto-generated catch block
+		//		e1.printStackTrace();
+		//	}
+            byte[] encoded;
+			try {
+				encoded = Files.readAllBytes(Paths.get("filename.txt"));
+				querystr = new String(encoded);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			querystr = BlockRetrieval.extractContactInfo(querystr);
+			querystr = querystr.replaceAll("[^a-zA-Z0-9]", " ");
+			querystr = querystr.substring(0, 9000);
+            System.out.println(querystr);
 
             
 
         	//4. Block Retrieval
             BlockRetrieval br = new BlockRetrieval();
+            ArrayList<RetrievalItem> rankResult = new ArrayList<RetrievalItem>();
 			try {
 				br.genDocIndex(block);
-				br.search(querystr);
+				rankResult = br.search(querystr);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
             
-			String result_string = "";
+			for (int i = 0; i < rankResult.size(); i++) {
+				RetrievalItem item = rankResult.get(i);
+				result_string.append("<article data-readmore aria-expanded=\"false\">");
+				result_string.append("<b>Rank "+ item.rank+"</b>");
+            	result_string.append("<br/>");
+            	result_string.append("<b>Score</b>: " + item.score);
+            	result_string.append("<br/>");
+            	result_string.append("<p>");
+            	result_string.append(item.content);
+            	result_string.append("</p>");
+				result_string.append("</article>");
+            	result_string.append("<br/><br/>");
+			}
+
         	//5.Output
         	Map<String, Object> attributes = new HashMap<>();
-            attributes.put("person", result_string.toString());
+            attributes.put("result", result_string.toString());
 
             // The hello.ftl file is located in directory:
             // src/test/resources/spark/template/freemarker
