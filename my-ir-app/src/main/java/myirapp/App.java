@@ -38,7 +38,6 @@ public class App
         	//System.out.println("person: "+ person+" attribute: "+attribute);
         	
         	
-        	
         	//2. Goole search, get urls
         	start = System.currentTimeMillis()/1000.0;
         	System.out.printf("2. Google Search ... ");

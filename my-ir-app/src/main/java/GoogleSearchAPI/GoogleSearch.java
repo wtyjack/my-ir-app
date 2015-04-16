@@ -11,14 +11,17 @@ import com.google.api.services.customsearch.model.Result;
 import com.google.api.services.customsearch.model.Search;
 
 public class GoogleSearch {
-	
-
+		
+	//Binhao's API KEY
     //api key
-    final private String API_KEY = "AIzaSyBGf8ZbmGPTSGD_62gimFN6gyfJaexYuwI";
+    //final private String API_KEY = "AIzaSyBGf8ZbmGPTSGD_62gimFN6gyfJaexYuwI";
     //custom search engine ID
-    final private String SEARCH_ENGINE_ID = "002665980160487806545:madupghnco0";
+    //final private String SEARCH_ENGINE_ID = "002665980160487806545:madupghnco0";
  
-    
+    //Jieqiong's API KEY
+    final private String API_KEY = "AIzaSyDcTR5QUDxpdAkHfJBDVqJ0B_0F7znRBWU"; 
+    final private String SEARCH_ENGINE_ID = "015474922118681401701:n_nuqstv8ls";
+
     /* 
      * Google search for 'keyword'
      * Fetch 'num' pages
@@ -31,7 +34,7 @@ public class GoogleSearch {
         
         Customsearch customsearch = new Customsearch(httpTransport, jsonFactory,null);
  
-        
+
         long count = 1;
         ArrayList<ResultEntry> resultentry = new ArrayList<ResultEntry>();
         

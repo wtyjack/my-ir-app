@@ -4,12 +4,18 @@
  * Module - Vips.java
  */
 
-package vips;
 
+package vips;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -107,14 +113,57 @@ public class Vips {
 	 * @param url Url
 	 * @throws MalformedURLException
 	 */
+	private String downWebPage(String urls) {
+	    URL url;
+	    InputStream is = null;
+	    BufferedReader br;
+	    String line;
+	    BufferedWriter bw = null; 
+		File fout = new File("out.html");
+		String path = fout.getPath();
+	    try {
+	        url = new URL(urls);
+	        is = url.openStream();  // throws an IOException
+	        br = new BufferedReader(new InputStreamReader(is));
+	        FileOutputStream fos = new FileOutputStream(fout);
+			bw = new BufferedWriter(new OutputStreamWriter(fos));
+	        while ((line = br.readLine()) != null) {
+	            bw.write(line+" ");
+				bw.newLine();
+	        }
+	    } catch (MalformedURLException mue) {
+	         mue.printStackTrace();
+	    } catch (IOException ioe) {
+	         ioe.printStackTrace();
+	    } finally {
+	        try {
+	            if (is != null) is.close();
+	            if (bw !=null) bw.close(); 
+	            return path; 
+	        } catch (IOException ioe) {
+	            // nothing to see here
+	        }
+	    }
+	    return path; 
+	    
+	}
+	
+	
+	
 	public void setUrl(String url)
 	{
+		
 		try
 		{
-			if (url.startsWith("http://") || url.startsWith("https://"))
-				_url = new URL(url);
-			else
-				_url = new URL("http://" + url);
+			
+			if (url.startsWith("http://") || url.startsWith("https://")){
+				String path = "file://"+System.getProperty("user.dir")+"/"+downWebPage(url);
+				_url = new URL(path);
+			}else{
+				String path = "file://"+System.getProperty("user.dir")+"/"+downWebPage("http://"+url);
+				_url = new URL(path);
+				//_url = new URL("http://" + url);
+			}
 		}
 		catch (Exception e)
 		{
