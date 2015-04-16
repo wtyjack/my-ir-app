@@ -39,7 +39,6 @@ public class App
         	//System.out.println("person: "+ person+" attribute: "+attribute);
         	
         	
-<<<<<<< HEAD
         	//2. Goole search, get urls
         	start = System.currentTimeMillis()/1000.0;
         	System.out.printf("2. Google Search ... ");
@@ -69,38 +68,6 @@ public class App
             end = System.currentTimeMillis()/1000.0;
             System.out.println("Excution time: " + ( end - start));
             
-=======
-        	
->>>>>>> bb33cb43c9c5988fc16fc24626e5c00d1aadd909
-        	
-        	//2. Goole search, get urls
-//        	start = System.currentTimeMillis()/1000.0;
-//        	System.out.printf("2. Google Search ... ");
-//        	GoogleSearch gsc = new GoogleSearch();
-//            ArrayList<ResultEntry> result = gsc.getSearchResult("walid database", 5);
-//            StringBuilder result_string = new StringBuilder();
-//            
-//            /* test -- print result */
-//            for(int i=0; i< result.size(); i++) {
-//            	ResultEntry temp = result.get(i);
-//            	result_string.append(i);
-//            	result_string.append("<br/>");
-//            	result_string.append(temp.getTitle());
-//            	result_string.append("<br/>");
-//            	result_string.append(temp.getURL());
-//            	result_string.append("<br/>");
-//            	result_string.append(temp.getSnippet());
-//            	result_string.append("<br/><br/>");
-//            	/*ResultEntry temp = result.get(i);
-//            	System.out.printf("%d: \n", (i+1));
-//            	System.out.printf("Tile: %s\n", temp.getTitle());
-//            	System.out.printf("URL: %s\n", temp.getURL());
-//            	System.out.printf("Snippet: %s\n", temp.getSnippet());
-//            	System.out.printf("---------------------\n");*/
-//            }
-//            System.out.printf("Done\n");
-//            end = System.currentTimeMillis()/1000.0;
-//            System.out.println("Excution time: " + ( end - start));
             
             
         	//3. Vips
@@ -147,7 +114,7 @@ public class App
 				e.printStackTrace();
 			}
             
-			String result_string = "";
+			//String result_string = "";
         	//5.Output
         	Map<String, Object> attributes = new HashMap<>();
             attributes.put("person", result_string.toString());
