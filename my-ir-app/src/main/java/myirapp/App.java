@@ -105,6 +105,7 @@ public class App
             	}catch(Exception e){
             		continue;
             	}
+          
             	
             	DOMTree dtree = new DOMTree("output/result.xml", 2);
             	ArrayList<String> temp_block = dtree.getDocuments();
