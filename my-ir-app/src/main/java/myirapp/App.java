@@ -4,24 +4,22 @@ import static spark.Spark.get;
 import static spark.SparkBase.port;
 import static spark.SparkBase.staticFileLocation;
 
-import java.io.PrintWriter;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jsoup.Jsoup;
-
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
 import vips.Vips;
 import BlockRetrievalAPI.BlockRetrieval;
 import BlockRetrievalAPI.RetrievalItem;
-import GoogleSearchAPI.GoogleSearch;
 import GoogleSearchAPI.ResultEntry;
 import XMLHandler.Block;
 import XMLHandler.DOMTree;
+
 
 
 /**
@@ -53,12 +51,19 @@ public class App
         	//2. Google search, get urls
         	start = System.currentTimeMillis()/1000.0;
         	System.out.printf("2. Google Search ... ");
-        	GoogleSearch gsc = new GoogleSearch();
-            ArrayList<ResultEntry> result = gsc.getSearchResult(query, 3);
+        	/*GoogleSearch gsc = new GoogleSearch();
+            ArrayList<ResultEntry> result = gsc.getSearchResult(query, 3);*/
             System.out.printf("Done\n");
             end = System.currentTimeMillis()/1000.0;
             t1 = end - start;
             
+            ArrayList<ResultEntry> result = new ArrayList<ResultEntry>();
+            ResultEntry et = new ResultEntry("title", "https://www.cs.purdue.edu/people/ninghui", "");
+            result.add(et);
+            et = new ResultEntry("title", "https://www.cs.purdue.edu/homes/ninghui/", "");
+            result.add(et);
+            et = new ResultEntry("title", "http://scholar.google.com/citations?user=Qc_4yiYAAAAJ&hl=en", "");
+            result.add(et);
             
             /*String [] result = {"https://www.cs.purdue.edu/homes/lsi/",
             						"https://www.cs.purdue.edu/homes/aref/", 
@@ -79,7 +84,7 @@ public class App
             ArrayList<Block> blocks = new ArrayList<Block>();
             start = System.currentTimeMillis()/1000.0;
             for(int i=0; i< result.size(); i++) {
-            	System.out.printf("Vips %d ... ", i);
+            	System.out.printf("Vips %d ... \n", i);
             	Vips vips = new Vips();
             	vips.enableGraphicsOutput(false);	// disable graphics output
             	vips.enableOutputToFolder(false);	// disable output to separate folder 
@@ -91,13 +96,19 @@ public class App
             		//vips.startSegmentation("https://www.cs.purdue.edu/homes/lsi/");		// start segmentation on page
             	    //vips.startSegmentation(result[i]);
             	}catch(Exception e){
+            		//e.printStackTrace();
             		continue;
             	}
             	
             	DOMTree dtree = new DOMTree("output/result.xml", 2, result.get(i).getURL());
             	//DOMTree dtree = new DOMTree("output/result.xml", 2, result[i]);
             	ArrayList<Block> temp_block= dtree.iterate();
+            	for(int j=0; j<temp_block.size(); j++)
+            		System.out.printf("%d: %s %s\n", j, temp_block.get(j).getUrl(), temp_block.get(j).getContent());
             	blocks.addAll(temp_block);
+            	
+            	File file = new File("output/result.xml");
+            	file.delete();
             	System.out.printf("Done\n");
             }
             end = System.currentTimeMillis()/1000.0;
@@ -109,7 +120,7 @@ public class App
             // TODO: query expansion
             //String querystr = "Publication Walid";
            String querystr = "";
-           ArrayList<ResultEntry> queryExpandResult = gsc.getSearchResult(attribute, 100);
+           /*ArrayList<ResultEntry> queryExpandResult = gsc.getSearchResult(attribute, 100);
            for(int i=0; i< queryExpandResult.size(); i++) {
         	   ResultEntry temp = queryExpandResult.get(i);
         	   querystr += temp.getSnippet()+" ";
@@ -125,7 +136,7 @@ public class App
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
+			}*/
             
             byte[] encoded = null;
 			try {
