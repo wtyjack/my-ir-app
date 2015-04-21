@@ -128,6 +128,7 @@ public class Vips {
 	        FileOutputStream fos = new FileOutputStream(fout);
 			bw = new BufferedWriter(new OutputStreamWriter(fos));
 	        while ((line = br.readLine()) != null) {
+	        	//System.out.printf("%d: %s\n\n",i++, line);
 	            bw.write(line+" ");
 				bw.newLine();
 	        }
@@ -261,6 +262,7 @@ public class Vips {
 
 		for (int iterationNumber = 1; iterationNumber < numberOfIterations+1; iterationNumber++)
 		{
+			//System.out.printf("VIPS: iteration %d\n", iterationNumber);
 			detector = new VipsSeparatorGraphicsDetector(pageWidth, pageHeight);
 
 			//visual blocks detection

@@ -75,7 +75,8 @@ public class App
             //System.out.println("Excution time: " + ( end - start));
             
             
-            /*String [] result = {"https://www.cs.purdue.edu/homes/aref/", 
+            /*String [] result = {"https://www.cs.purdue.edu/homes/lsi/",
+            						"https://www.cs.purdue.edu/homes/aref/", 
             						"http://ahmedmoustafa.wix.com/home#!publications/clku",
             						"https://www.cs.purdue.edu/people/aref", 
             						"http://faculty.washington.edu/mhali/Publications/Publications.htm",
@@ -90,27 +91,31 @@ public class App
             //3. Vips
             ArrayList<String> blocks = new ArrayList<String>();
             start = System.currentTimeMillis()/1000.0;
-            System.out.printf("Vips ... ");
+            
+            
+            
             for(int i=0; i< result.size(); i++) {
+            	System.out.printf("Vips %d ... ", 0);
             	Vips vips = new Vips();
             	vips.enableGraphicsOutput(false);	// disable graphics output
             	vips.enableOutputToFolder(false);	// disable output to separate folder 
             	vips.setOutputFileName("./output/result");
             	vips.setPredefinedDoC(8);			// set permitted degree of coherence
             	try{
-            		System.out.println(result.get(0).getURL());
-            		vips.startSegmentation(result.get(0).getURL());		// start segmentation on page
-            		//vips.startSegmentation("https://www.cs.purdue.edu/people/faculty/aref/");		// start segmentation on page
+            		System.out.println(result.get(i).getURL());
+            		vips.startSegmentation(result.get(i).getURL());		// start segmentation on page
+            		//vips.startSegmentation("https://www.cs.purdue.edu/homes/lsi/");		// start segmentation on page
             		//vips.startSegmentation(result[i]);
             	}catch(Exception e){
-            		continue;
+            		//continue;
             	}
             	
             	DOMTree dtree = new DOMTree("output/result.xml", 2);
             	ArrayList<String> temp_block = dtree.getDocuments();
             	blocks.addAll(temp_block);
+            	System.out.printf("Done\n");
             }
-            System.out.printf("Done\n");	
+            
             end = System.currentTimeMillis()/1000.0;
             t2 = end - start;
             //System.out.println("Excution time: " + ( end - start));
@@ -151,7 +156,7 @@ public class App
 			querystr = querystr.substring(0, 9000);
             //System.out.println(querystr);
 
-            
+
 
         	//4. Block Retrieval
 			start = System.currentTimeMillis()/1000.0;
@@ -166,9 +171,16 @@ public class App
 			end = System.currentTimeMillis()/1000.0;
             t3 = end - start;
             
+            
+            
 			StringBuilder result_string = new StringBuilder();
-			result_string.append("\""+query+"\"");
+			result_string.append("\""+query+"\"<br/>");
+			result_string.append("Google Search Time: " + t1 + "<br/>");
+			result_string.append("VIPS time: " +t2 + "<br/>");
+			result_string.append("Block Retrieval Time: " + t3 + "<br/>");
 			result_string.append("<br/><br/>");
+			
+			
 			for (int i = 0; i < rankResult.size(); i++) {
 				RetrievalItem item = rankResult.get(i);
 				result_string.append("<article data-readmore aria-expanded=\"false\">");

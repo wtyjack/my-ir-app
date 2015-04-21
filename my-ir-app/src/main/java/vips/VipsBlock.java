@@ -179,7 +179,7 @@ public class VipsBlock {
 	 */
 	private void countTextLength(VipsBlock vipsBlock)
 	{
-		_textLen = vipsBlock.getBox().getText().replaceAll("\n", "").length();
+		_textLen = vipsBlock.getBox().getText().replaceAll("\n", ":::::::::::::").length();
 	}
 
 	/**
