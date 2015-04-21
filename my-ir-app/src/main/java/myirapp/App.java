@@ -4,11 +4,14 @@ import static spark.Spark.get;
 import static spark.SparkBase.port;
 import static spark.SparkBase.staticFileLocation;
 
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jsoup.Jsoup;
 
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;
@@ -19,8 +22,6 @@ import GoogleSearchAPI.GoogleSearch;
 import GoogleSearchAPI.ResultEntry;
 import XMLHandler.Block;
 import XMLHandler.DOMTree;
-
-import com.google.api.services.customsearch.model.Result;
 
 
 /**
@@ -44,22 +45,22 @@ public class App
         	//1. Get request
         	String person = request.queryParams("person");
         	String attribute = request.queryParams("attribute");   
-        	String query = person + " " + attribute;
+        	String query = person/* + " " + attribute*/;
         	System.out.printf("1. Query: \"%s %s\"\n", person, attribute);
 
         	
         	
         	//2. Google search, get urls
         	start = System.currentTimeMillis()/1000.0;
-        	/*System.out.printf("2. Google Search ... ");
+        	System.out.printf("2. Google Search ... ");
         	GoogleSearch gsc = new GoogleSearch();
             ArrayList<ResultEntry> result = gsc.getSearchResult(query, 3);
-            System.out.printf("Done\n");*/
+            System.out.printf("Done\n");
             end = System.currentTimeMillis()/1000.0;
             t1 = end - start;
             
             
-            String [] result = {/*"https://www.cs.purdue.edu/homes/lsi/",*/
+            /*String [] result = {"https://www.cs.purdue.edu/homes/lsi/",
             						"https://www.cs.purdue.edu/homes/aref/", 
             						"http://ahmedmoustafa.wix.com/home#!publications/clku",
             						"https://www.cs.purdue.edu/people/aref", 
@@ -69,7 +70,7 @@ public class App
             						"http://scholar.google.com/citations?user=vX45evgAAAAJ",
             						"http://www.researchgate.net/profile/Walid_Aref",
             						"http://dmlab.cs.umn.edu/publications.html",
-            						"https://cs.uwaterloo.ca/~ilyas/publist.html"};
+            						"https://cs.uwaterloo.ca/~ilyas/publist.html"};*/
             
             
             
@@ -77,7 +78,7 @@ public class App
             //3. Vips
             ArrayList<Block> blocks = new ArrayList<Block>();
             start = System.currentTimeMillis()/1000.0;
-            for(int i=0; i< result.length; i++) {
+            for(int i=0; i< result.size(); i++) {
             	System.out.printf("Vips %d ... ", i);
             	Vips vips = new Vips();
             	vips.enableGraphicsOutput(false);	// disable graphics output
@@ -85,16 +86,16 @@ public class App
             	vips.setOutputFileName("./output/result");
             	vips.setPredefinedDoC(8);			// set permitted degree of coherence
             	try{
-            		//System.out.println(result.get(i).getURL());
-            		//vips.startSegmentation(result.get(i).getURL());		// start segmentation on page
+            		System.out.println(result.get(i).getURL());
+            		vips.startSegmentation(result.get(i).getURL());		// start segmentation on page
             		//vips.startSegmentation("https://www.cs.purdue.edu/homes/lsi/");		// start segmentation on page
-            	    vips.startSegmentation(result[i]);
+            	    //vips.startSegmentation(result[i]);
             	}catch(Exception e){
             		continue;
             	}
             	
-            	//DOMTree dtree = new DOMTree("output/result.xml", 2, result.get(i).getURL());
-            	DOMTree dtree = new DOMTree("output/result.xml", 2, result[i]);
+            	DOMTree dtree = new DOMTree("output/result.xml", 2, result.get(i).getURL());
+            	//DOMTree dtree = new DOMTree("output/result.xml", 2, result[i]);
             	ArrayList<Block> temp_block= dtree.iterate();
             	blocks.addAll(temp_block);
             	System.out.printf("Done\n");
@@ -107,27 +108,31 @@ public class App
             
             // TODO: query expansion
             //String querystr = "Publication Walid";
-              String querystr = "";
-           // ArrayList<ResultEntry> queryExpandResult = gsc.getSearchResult(attribute, 100);
-           // for(int i=0; i< queryExpandResult.size(); i++) {
-           // 	ResultEntry temp = queryExpandResult.get(i);
-           // 	querystr += temp.getSnippet()+" ";
-           // }
-           // //result_string.append(bindSnippet);
-           // querystr = Jsoup.parse(querystr).text();
-           // 
+           String querystr = "";
+           ArrayList<ResultEntry> queryExpandResult = gsc.getSearchResult(attribute, 100);
+           for(int i=0; i< queryExpandResult.size(); i++) {
+        	   ResultEntry temp = queryExpandResult.get(i);
+        	   querystr += temp.getSnippet()+" ";
+           }
+           //result_string.append(bindSnippet);
+           querystr = Jsoup.parse(querystr).text();
+            
            // // TEST
-           // try {
-		//		PrintWriter out = new PrintWriter("filename.txt");
-		//		out.println(querystr);
-		//		out.close();
-		//	} catch (Exception e1) {
-		//		// TODO Auto-generated catch block
-		//		e1.printStackTrace();
-		//	}
-            byte[] encoded;
+           try {
+				PrintWriter out = new PrintWriter("Contact.txt");
+				out.println(querystr);
+				out.close();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+            
+            byte[] encoded = null;
 			try {
-				encoded = Files.readAllBytes(Paths.get("filename.txt"));
+				if(attribute.equals("Publications"))
+					encoded = Files.readAllBytes(Paths.get("Publications.txt"));
+				else if(attribute.equals("Contact"))
+					encoded = Files.readAllBytes(Paths.get("Contact.txt"));
 				querystr = new String(encoded);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
@@ -135,7 +140,7 @@ public class App
 			}
 			querystr = BlockRetrieval.extractContactInfo(querystr);
 			querystr = querystr.replaceAll("[^a-zA-Z0-9]", " ");
-			querystr = querystr.substring(0, 9000);
+			querystr = querystr.substring(0, 8000);
             //System.out.println(querystr);
 
 
@@ -235,32 +240,5 @@ public class App
             return null;
         });
         */
-    }
-    
-    private static class VIPsThread implements Runnable {
-    	private String url;
-    	private int index;
-    	
-    	
-    	public VIPsThread(String url, int i) {
-			this.url = url;
-			this.index = i;
-		}
-    	
-    	public void run() {
-    		System.out.printf("Start Vips thread %d ... %s\n", index, url);
-        	Vips vips = new Vips();
-        	vips.enableGraphicsOutput(false);	// disable graphics output
-        	vips.enableOutputToFolder(false);	// disable output to separate folder 
-        	vips.setOutputFileName("./output/"+index);
-        	vips.setPredefinedDoC(8);			// set permitted degree of coherence
-        	try{
-        		vips.startSegmentation(url);		// start segmentation on page
-        	}catch(Exception e){
-        		//continue;
-        	}
-        	System.out.printf("Start Vips thread %d Done\n", index);
-        	
-    	}
     }
 }
