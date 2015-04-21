@@ -91,16 +91,10 @@ public class BlockRetrieval {
 	
 	}
 	
-	// compute relevance score for each document
-	private double computeRelScore(){
-		
-		return 0;
-	}
-	
 	private static void addDoc(IndexWriter w, Block docs) throws IOException {
 		  Document doc = new Document();
 		  // extract phone num and email
-		  doc.add(new TextField("content", extractContactInfo(docs.getContent()), Field.Store.YES));
+		  doc.add(new TextField("content", docs.getContent(), Field.Store.YES));
 		  doc.add(new StringField("url", docs.getUrl(), Field.Store.YES));
 
 		  w.addDocument(doc);
@@ -110,11 +104,11 @@ public class BlockRetrieval {
 		String tmp = content;
 		Pattern r = Pattern.compile(emailReg);
 		Matcher m = r.matcher(tmp);
-		m.replaceAll(" email ");
+		tmp = m.replaceAll(" email ");
 
 		r = Pattern.compile(phoneReg);
 		m = r.matcher(tmp);
-		m.replaceAll(" phone ");
+		tmp = m.replaceAll(" phone ");
 
 		return tmp;
 	}
