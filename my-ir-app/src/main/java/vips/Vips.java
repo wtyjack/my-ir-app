@@ -99,7 +99,7 @@ public class Vips {
 	{
 		if (value <= 0 || value > 11)
 		{
-			System.err.println("pDoC value must be between 1 and 11! Not " + value + "!");
+			//System.err.println("pDoC value must be between 1 and 11! Not " + value + "!");
 			return;
 		}
 		else
@@ -193,7 +193,7 @@ public class Vips {
 		}
 		catch (Exception e)
 		{
-			System.err.print(e.getMessage());
+			//System.err.print(e.getMessage());
 		}
 	}
 
@@ -219,7 +219,7 @@ public class Vips {
 			ImageIO.write(page, "png", new File(filename));
 		} catch (Exception e)
 		{
-			System.err.println("Error: " + e.getMessage());
+			//System.err.println("Error: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -420,7 +420,7 @@ public class Vips {
 
 				if (!new File(outputFolder).mkdir())
 				{
-					System.err.println("Something goes wrong during directory creation!");
+					//System.err.println("Something goes wrong during directory creation!");
 				}
 				else
 				{
@@ -437,7 +437,7 @@ public class Vips {
 		}
 		catch (Exception e)
 		{
-			System.err.println("Something's wrong!");
+			//System.err.println("Something's wrong!");
 			e.printStackTrace();
 		}
 	}

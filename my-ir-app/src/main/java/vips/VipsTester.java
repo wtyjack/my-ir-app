@@ -23,7 +23,7 @@ public class VipsTester {
 		// we've just one argument - web address of page
 		if (args.length != 1)
 		{
-			System.err.println("We've just only one argument - web address of page!");
+			//System.err.println("We've just only one argument - web address of page!");
 			System.exit(0);
 		}
 

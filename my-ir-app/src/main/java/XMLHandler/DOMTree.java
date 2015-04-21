@@ -12,10 +12,12 @@ import java.util.*;
 public class DOMTree {
 	private Document doc;
 	private int DOC;
+	private String url; 
 
-	public DOMTree(String filename,int DOC) {
+	public DOMTree(String filename,int DOC, String url) {
 		this.buildDOM(filename);
 		this.DOC = DOC;
+		this.url = url;
 	}
 
 	private void getDOCLevelNodes(Node node, int currlevel,
@@ -45,18 +47,19 @@ public class DOMTree {
 		for(Node node: docLevelNodes){
 			Element e = (Element) node;
 			String id = e.getAttribute("ID");
-			//System.out.println(id+"\n"); 
+			System.out.println(id+"\n"); 
 			results.add(""); 
 			cocatenateChildrenContent(node,results);
-			//System.out.println(results.get(results.size()-1));
+			System.out.println(results.get(results.size()-1));
 		}
 		return results;
 	}
 
-	public void iterate() {
-		ArrayList<Node> results = new ArrayList<Node>();
-		this.getChildren(this.doc.getDocumentElement());
-		
+	public ArrayList<Block> iterate() {
+		//ArrayList<String> results = new ArrayList<String>();
+		ArrayList<Block> results = new ArrayList<Block>(); 
+		this.getChildren(this.doc.getDocumentElement(),results);
+		return results;
 	}
 	
 	public void cocatenateChildrenContent(Node node,ArrayList<String> results){
@@ -77,15 +80,18 @@ public class DOMTree {
 		}
 	}
 	
-	public void getChildren(Node node){
+	public void getChildren(Node node,ArrayList<Block> results){
 		NodeList nodeList = node.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node currentNode = nodeList.item(i);
 			if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+				
 				Element e = (Element) currentNode;
-				String content = e.getAttribute("ID");
-				System.out.println(content);
-				getChildren(currentNode);
+				if(e.hasAttribute("Content")){
+					//results.add(e.getAttribute("Content"));
+					results.add(new Block(e.getAttribute("Content"),this.url));
+				}
+				getChildren(currentNode,results);
 			}
 		}
 	}
@@ -93,7 +99,6 @@ public class DOMTree {
 	private void buildDOM(String fileName) {
 		try {
 			File XmlFile = new File(fileName);
-					
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -104,5 +109,12 @@ public class DOMTree {
 		}
 	}
 
+	public static void main(String args[]) {
+		DOMTree d = new DOMTree("/Users/zhuangenze/Desktop/vips_java-master/VIPSResult.xml",2,"www.google.com");
+		//ArrayList<Result> results = new ArrayList<Result>(); 
+		ArrayList<Block> r = d.iterate();
+		boolean f = true;
+		
+	}
 
 }

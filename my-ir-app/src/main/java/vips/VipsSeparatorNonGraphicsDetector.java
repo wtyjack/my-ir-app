@@ -373,7 +373,7 @@ public class VipsSeparatorNonGraphicsDetector implements VipsSeparatorDetector {
 	{
 		if (_visualBlocks.size() == 0)
 		{
-			System.err.println("I don't have any visual blocks!");
+			//System.err.println("I don't have any visual blocks!");
 			return;
 		}
 
@@ -409,7 +409,7 @@ public class VipsSeparatorNonGraphicsDetector implements VipsSeparatorDetector {
 	{
 		if (_visualBlocks.size() == 0)
 		{
-			System.err.println("I don't have any visual blocks!");
+			//System.err.println("I don't have any visual blocks!");
 			return;
 		}
 

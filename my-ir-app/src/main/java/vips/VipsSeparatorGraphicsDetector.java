@@ -444,7 +444,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 	{
 		if (_visualBlocks.size() == 0)
 		{
-			System.err.println("I don't have any visual blocks!");
+			//System.err.println("I don't have any visual blocks!");
 			return;
 		}
 
@@ -481,7 +481,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 	{
 		if (_visualBlocks.size() == 0)
 		{
-			System.err.println("I don't have any visual blocks!");
+			//System.err.println("I don't have any visual blocks!");
 			return;
 		}
 
@@ -989,7 +989,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 			ImageIO.write(_image, "png", new File(filename));
 		} catch (Exception e)
 		{
-			System.err.println("Error: " + e.getMessage());
+			//System.err.println("Error: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -1009,7 +1009,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 			ImageIO.write(_image, "png", new File(filename));
 		} catch (Exception e)
 		{
-			System.err.println("Error: " + e.getMessage());
+			//System.err.println("Error: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}

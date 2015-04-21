@@ -1,12 +1,8 @@
 <!DOCTYPE HTML>
-<!--
-	Photon by HTML5 UP
-	html5up.net | @n33co
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
+
 <html>
 	<head>
-		<title>Photon by HTML5 UP</title>
+		<title>Person-Attribute Identification and Retrieval</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
@@ -44,22 +40,23 @@
 					<p>Are you looking for publications of an expert? Or contact info of a person? Or more?</p>
 					
 					
-					<form method="post" action="#">
+
+					<form id="myForm" action="result.html">
 						<ul class="actions uniform">
-							<li><input type="text" id="person" value="" placeholder="Person (i.e. Binhao Lin)" /></li>
-							<li><input type="text" id="attribute" value="" placeholder="Attribute (i.e. Publications)" /></li>
+							<li><input type="text" id="person" name="person" value="" placeholder="Person (i.e. Binhao Lin)" /></li>
+							<li><input type="text" id="attribute" name="attribute" value="" placeholder="Attribute (i.e. Publications)" /></li>
 							</br></br></br>
-							<li><a href="#one" id="result_button" class="button scrolly" >Search</a></li>
+							<!-- <li><a href="#one" id="result_button" class="button scrolly" >Search</a></li> -->
+
+							<li><input type="button" onclick="submit_button()" value="Search"><li>
 						</ul>
 					</form>
 							
-					<ul class="actions">
-						
-					</ul>
 				</div>
 			</section>
+			
 
-		<!-- One -->
+		<!-- One 
 			<section id="one" class="main style1">
 				<div class="container">
 					<div class="row 150%">
@@ -70,28 +67,20 @@
 							<p id='retrieval_results'></p>
 						</div>
 						<div class="6u$ 12u$(medium) important(medium)">
-							<!--<span class="image fit"><img src="images/pic01.jpg" alt="" /></span> -->
+					
 						</div>
 						</br></br></br></br></br></br></br></br></br></br></br></br>
 					</div>
 				</div>
 			</section>
-		
-		<!--
-		<APPLET CODE="GoogleSearch.class"
-        NAME="myApplet"
-        HEIGHT=10 WIDTH=10>
-		</APPLET>
 		-->
-		
-		<script language="Javascript" type="text/javascript">
-			google.load('search', '1');
-       
-			document.getElementById('result_button').onclick = retrieval_method;
-		
-		</script>
-		
-		
+
+
+			<script>
+				function submit_button() {
+					document.getElementById("myForm").submit();
+				}
+			</script>
 		
 
 		<!-- Two
@@ -497,7 +486,7 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			</section>
 		-->
 
-		<!-- Footer
+		<!-- Footer	
 			<section id="footer">
 				<ul class="icons">
 					<li><a href="#" class="icon alt fa-twitter"><span class="label">Twitter</span></a></li>

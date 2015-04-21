@@ -225,7 +225,7 @@ public final class VipsOutput {
 		}
 		catch (Exception e)
 		{
-			System.err.println("Error: " + e.getMessage());
+			//System.err.println("Error: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}

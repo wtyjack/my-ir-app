@@ -17,7 +17,11 @@ import BlockRetrievalAPI.BlockRetrieval;
 import BlockRetrievalAPI.RetrievalItem;
 import GoogleSearchAPI.GoogleSearch;
 import GoogleSearchAPI.ResultEntry;
+import XMLHandler.Block;
 import XMLHandler.DOMTree;
+
+import com.google.api.services.customsearch.model.Result;
+
 
 /**
  * Hello world!
@@ -25,7 +29,7 @@ import XMLHandler.DOMTree;
  */
 public class App 
 {
-    public static void main( String[] args ) 
+    public static void main( String[] args ) throws InterruptedException 
     {
     	port(2345);
     	staticFileLocation("/");        
@@ -35,6 +39,8 @@ public class App
         	
         	double start, end;
         	double t1, t2, t3, t4;
+        	
+        	
         	//1. Get request
         	String person = request.queryParams("person");
         	String attribute = request.queryParams("attribute");   
@@ -45,37 +51,15 @@ public class App
         	
         	//2. Google search, get urls
         	start = System.currentTimeMillis()/1000.0;
-        	System.out.printf("2. Google Search ... ");
+        	/*System.out.printf("2. Google Search ... ");
         	GoogleSearch gsc = new GoogleSearch();
             ArrayList<ResultEntry> result = gsc.getSearchResult(query, 3);
-            
-          
-            /* test -- print result */
-            /*StringBuilder result_string = new StringBuilder();
-            for(int i=0; i< result.size(); i++) {
-            	ResultEntry temp = result.get(i);
-            	result_string.append(i);
-            	result_string.append("<br/>");
-            	result_string.append(temp.getTitle());
-            	result_string.append("<br/>");
-            	result_string.append(temp.getURL());
-            	result_string.append("<br/>");
-            	result_string.append(temp.getSnippet());
-            	result_string.append("<br/><br/>");
-            	//ResultEntry temp = result.get(i);
-            	System.out.printf("%d: \n", (i+1));
-            	System.out.printf("Tile: %s\n", temp.getTitle());
-            	System.out.printf("URL: %s\n", temp.getURL());
-            	System.out.printf("Snippet: %s\n", temp.getSnippet());
-            	System.out.printf("---------------------\n");
-            }*/
-            System.out.printf("Done\n");
+            System.out.printf("Done\n");*/
             end = System.currentTimeMillis()/1000.0;
             t1 = end - start;
-            //System.out.println("Excution time: " + ( end - start));
             
             
-            /*String [] result = {"https://www.cs.purdue.edu/homes/lsi/",
+            String [] result = {/*"https://www.cs.purdue.edu/homes/lsi/",*/
             						"https://www.cs.purdue.edu/homes/aref/", 
             						"http://ahmedmoustafa.wix.com/home#!publications/clku",
             						"https://www.cs.purdue.edu/people/aref", 
@@ -85,40 +69,38 @@ public class App
             						"http://scholar.google.com/citations?user=vX45evgAAAAJ",
             						"http://www.researchgate.net/profile/Walid_Aref",
             						"http://dmlab.cs.umn.edu/publications.html",
-            						"https://cs.uwaterloo.ca/~ilyas/publist.html"};*/
+            						"https://cs.uwaterloo.ca/~ilyas/publist.html"};
             
-
+            
+            
+            
             //3. Vips
-            ArrayList<String> blocks = new ArrayList<String>();
+            ArrayList<Block> blocks = new ArrayList<Block>();
             start = System.currentTimeMillis()/1000.0;
-            
-            
-            
-            for(int i=0; i< result.size(); i++) {
-            	System.out.printf("Vips %d ... ", 0);
+            for(int i=0; i< result.length; i++) {
+            	System.out.printf("Vips %d ... ", i);
             	Vips vips = new Vips();
             	vips.enableGraphicsOutput(false);	// disable graphics output
             	vips.enableOutputToFolder(false);	// disable output to separate folder 
             	vips.setOutputFileName("./output/result");
             	vips.setPredefinedDoC(8);			// set permitted degree of coherence
             	try{
-            		System.out.println(result.get(i).getURL());
-            		vips.startSegmentation(result.get(i).getURL());		// start segmentation on page
+            		//System.out.println(result.get(i).getURL());
+            		//vips.startSegmentation(result.get(i).getURL());		// start segmentation on page
             		//vips.startSegmentation("https://www.cs.purdue.edu/homes/lsi/");		// start segmentation on page
-            		//vips.startSegmentation(result[i]);
+            	    vips.startSegmentation(result[i]);
             	}catch(Exception e){
-            		//continue;
+            		continue;
             	}
             	
-            	DOMTree dtree = new DOMTree("output/result.xml", 2);
-            	ArrayList<String> temp_block = dtree.getDocuments();
+            	//DOMTree dtree = new DOMTree("output/result.xml", 2, result.get(i).getURL());
+            	DOMTree dtree = new DOMTree("output/result.xml", 2, result[i]);
+            	ArrayList<Block> temp_block= dtree.iterate();
             	blocks.addAll(temp_block);
             	System.out.printf("Done\n");
             }
-            
             end = System.currentTimeMillis()/1000.0;
             t2 = end - start;
-            //System.out.println("Excution time: " + ( end - start));
             
 
             
@@ -174,7 +156,7 @@ public class App
             
             
 			StringBuilder result_string = new StringBuilder();
-			result_string.append("\""+query+"\"<br/>");
+			result_string.append("Query: \""+query+"\"<br/>");
 			result_string.append("Google Search Time: " + t1 + "<br/>");
 			result_string.append("VIPS time: " +t2 + "<br/>");
 			result_string.append("Block Retrieval Time: " + t3 + "<br/>");
@@ -187,6 +169,9 @@ public class App
 				result_string.append("<b>Rank "+ item.rank+"</b>");
             	result_string.append("<br/>");
             	result_string.append("<b>Score</b>: " + item.score);
+            	result_string.append("<br/>");
+            	result_string.append("<b>URL</b>: ");
+            	result_string.append("<a href=\"" + item.url + "\">" + item.url+  "</a>");
             	result_string.append("<br/>");
             	result_string.append("<p>");
             	result_string.append(item.content);
@@ -250,5 +235,32 @@ public class App
             return null;
         });
         */
+    }
+    
+    private static class VIPsThread implements Runnable {
+    	private String url;
+    	private int index;
+    	
+    	
+    	public VIPsThread(String url, int i) {
+			this.url = url;
+			this.index = i;
+		}
+    	
+    	public void run() {
+    		System.out.printf("Start Vips thread %d ... %s\n", index, url);
+        	Vips vips = new Vips();
+        	vips.enableGraphicsOutput(false);	// disable graphics output
+        	vips.enableOutputToFolder(false);	// disable output to separate folder 
+        	vips.setOutputFileName("./output/"+index);
+        	vips.setPredefinedDoC(8);			// set permitted degree of coherence
+        	try{
+        		vips.startSegmentation(url);		// start segmentation on page
+        	}catch(Exception e){
+        		//continue;
+        	}
+        	System.out.printf("Start Vips thread %d Done\n", index);
+        	
+    	}
     }
 }

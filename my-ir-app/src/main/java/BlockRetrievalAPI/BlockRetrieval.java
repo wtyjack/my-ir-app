@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -21,6 +22,8 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+
+import XMLHandler.Block;
 
 public class BlockRetrieval {
 	// Members
@@ -38,7 +41,7 @@ public class BlockRetrieval {
 	}
 
 	// Generate document index based on the list of blocks 
-	public void genDocIndex(ArrayList<String> docs) throws IOException{
+	public void genDocIndex(ArrayList<Block> docs) throws IOException{
 		IndexWriterConfig config = new IndexWriterConfig(analyzer);
 		IndexWriter w = new IndexWriter(index, config);
 		
@@ -73,6 +76,7 @@ public class BlockRetrieval {
 	      Document d = searcher.doc(docId);
 	      item.rank = i + 1;
 	      item.content = d.get("content");
+	      item.url = d.get("url");
 	      item.score = docScore;
 	      result.add(item);
 	      //System.out.println((i + 1) + ". " + d.get("content") + "\n" + docScore);
@@ -93,10 +97,11 @@ public class BlockRetrieval {
 		return 0;
 	}
 	
-	private static void addDoc(IndexWriter w, String content) throws IOException {
+	private static void addDoc(IndexWriter w, Block docs) throws IOException {
 		  Document doc = new Document();
 		  // extract phone num and email
-		  doc.add(new TextField("content", extractContactInfo(content), Field.Store.YES));
+		  doc.add(new TextField("content", extractContactInfo(docs.getContent()), Field.Store.YES));
+		  doc.add(new StringField("url", docs.getUrl(), Field.Store.YES));
 
 		  w.addDocument(doc);
 	}
