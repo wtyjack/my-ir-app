@@ -109,6 +109,7 @@ public class App
             // TODO: query expansion
             //String querystr = "Publication Walid";
            String querystr = "";
+           /*
            ArrayList<ResultEntry> queryExpandResult = gsc.getSearchResult(attribute, 100);
            for(int i=0; i< queryExpandResult.size(); i++) {
         	   ResultEntry temp = queryExpandResult.get(i);
@@ -116,6 +117,7 @@ public class App
            }
            //result_string.append(bindSnippet);
            querystr = Jsoup.parse(querystr).text();
+           
             
            // // TEST
            try {
@@ -126,6 +128,7 @@ public class App
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			*/
             
             byte[] encoded = null;
 			try {
@@ -139,7 +142,7 @@ public class App
 				e1.printStackTrace();
 			}
 			querystr = BlockRetrieval.extractContactInfo(querystr);
-			querystr = querystr.replaceAll("[^a-zA-Z0-9]", " ");
+			querystr = querystr.replaceAll("[^a-zA-Z0-9@]", " ");
 			querystr = querystr.substring(0, 8000);
             //System.out.println(querystr);
 
