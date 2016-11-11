@@ -1,2 +1,2 @@
-# Purdue CS54701 IR_Final
-CS54701 Information Retrieval Final Project - Person Attribute Retrieval
+## Person Attribute Retrieval System
+This is a course project on a IR course.
